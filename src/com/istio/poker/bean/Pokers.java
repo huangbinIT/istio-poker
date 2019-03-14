@@ -2,12 +2,16 @@ package com.istio.poker.bean;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Pokers {
     private static List<Poker> pokers = new ArrayList<Poker>(52);
+    private static int removedNumber = 0;
 
-    static {
+    public Pokers() {
+        init();
+    }
+
+    private void init () {
         pokers.add(new Poker(Color.SPADE, Point.AZ));
         pokers.add(new Poker(Color.SPADE, Point.KING));
         pokers.add(new Poker(Color.SPADE, Point.QUEEN));
@@ -67,9 +71,15 @@ public class Pokers {
     }
 
     public static Poker getPoker () {
-        int index = (int) (Math.random() * 1000 * 31);
-        index = index & (52 - 1);
-        return pokers.remove(index);
+        if (pokers.size() == 0) {
+            System.out.println("The pokers was empty!");
+            System.exit(0);
+        }
+        int index = (int) (Math.random() * 1000000 * 137);
+        index = index % (52 - removedNumber++);
+        Poker poker = pokers.remove(index);
+        System.out.println("size of Pokers " + pokers.size());
+        return poker;
     }
 
 }

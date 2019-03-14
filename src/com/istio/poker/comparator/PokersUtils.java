@@ -39,7 +39,7 @@ public class PokersUtils {
 
     public static boolean isShunZi (Poker[] pokers) {
         return pokers[0].getPoint().compare(pokers[1].getPoint()) == 1
-                || pokers[1].getPoint().compare(pokers[2].getPoint()) == 1;
+                && pokers[1].getPoint().compare(pokers[2].getPoint()) == 1;
     }
 
     public static boolean isTongHua (Poker[] pokers) {

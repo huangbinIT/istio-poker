@@ -6,12 +6,28 @@ public class PokersEntity implements Comparable<Object> {
     private Poker[] pokers;
     private Type type;
 
-    public PokersEntity(Poker[] pokers) {
-        this.pokers = sortByPoint(pokers);
-        this.type = PokersUtils.getType(pokers);
+    private PokersEntity(Poker[] pokers) {
+        this.pokers = pokers;
     }
 
-    private Poker[] sortByPoint (Poker[] pokers) {
+    public void openCards () {
+        sortByPoint();
+        this.type = PokersUtils.getType(this.pokers);
+    }
+
+    public Type getType () {
+        return this.type;
+    }
+
+    public static PokersEntity createEntity () {
+        Poker poker1 = Pokers.getPoker();
+        Poker poker2 = Pokers.getPoker();
+        Poker poker3 = Pokers.getPoker();
+
+        return new PokersEntity(new Poker[] { poker1, poker2, poker3 });
+    }
+
+    private void sortByPoint () {
         Poker maxPoker = pokers[0];
         Poker midPoker = pokers[1];
         Poker minPoker = pokers[2];
@@ -20,28 +36,49 @@ public class PokersEntity implements Comparable<Object> {
         int mid = pokers[1].getPoint().getWeight();
         int min = pokers[2].getPoint().getWeight();
 
-        Poker temp;
-        if (max > mid && max < min) {
-            temp = maxPoker;
-            maxPoker = minPoker;
-            minPoker = temp;
-        } else if (max < mid && max > min) {
-            temp = maxPoker;
-            maxPoker = midPoker;
-            midPoker = maxPoker;
+        Poker[] sortedPokers = null;
+
+        if (max > mid && max > min) {
+            if (mid > min) {// max > mid > min
+                sortedPokers = new Poker[] { maxPoker, midPoker, minPoker };
+            } else {// max > min > mid
+                sortedPokers = new Poker[] { maxPoker, minPoker, midPoker };
+            }
+        } else if (max > mid && max < min) { // min > max > mid
+            sortedPokers = new Poker[] { minPoker, maxPoker, midPoker };
+        } else if (max < mid && max > min) { // mid > max > min
+            sortedPokers = new Poker[] { midPoker, maxPoker, minPoker };
         } else if (max < mid && max < min) {
-            temp = maxPoker;
-            if (mid > min) {
-                maxPoker = midPoker;
-                midPoker = minPoker;
-                minPoker = temp;
-            } else {
-                maxPoker = minPoker;
-                minPoker = maxPoker;
+            if (mid > min) { // mid > min > max
+                sortedPokers = new Poker[] { midPoker, minPoker, maxPoker };
+            } else { // min > mid > max
+                sortedPokers = new Poker[] { minPoker, midPoker, maxPoker };
+            }
+        } else if (max == mid || max == min || mid == min) {
+            if (max == mid && max == min) { // max = mid = min
+                sortedPokers = new Poker[] { maxPoker, midPoker, minPoker };
+            } else if (max == mid) {
+                if (max > min) { // max = mid > min
+                    sortedPokers = new Poker[] { maxPoker, midPoker, minPoker };
+                } else { // min > max = mid
+                    sortedPokers = new Poker[] { minPoker, maxPoker, midPoker };
+                }
+            } else if (max == min) {
+                if (max > mid) { // max = min > mid
+                    sortedPokers = new Poker[] { maxPoker, minPoker, midPoker };
+                } else { // mid > max = min
+                    sortedPokers = new Poker[] { midPoker, maxPoker, minPoker };
+                }
+            } else { // max > min = mid
+                if (max > mid) {
+                    sortedPokers = new Poker[] { maxPoker, midPoker, minPoker };
+                } else { // min = mid > max
+                    sortedPokers = new Poker[] { midPoker, minPoker, maxPoker };
+                }
             }
         }
 
-        return new Poker[] { maxPoker, midPoker, minPoker };
+        this.pokers = sortedPokers;
     }
 
     @Override
@@ -79,6 +116,12 @@ public class PokersEntity implements Comparable<Object> {
         } else {
             return this.type.compare(entity.type);
         }
+    }
+
+    @Override
+    public String toString () {
+        return "[ " + pokers[0].toString() + " " + pokers[1].toString() + " " + pokers[2].toString() + " " + " ] --> "
+                + this.type;
     }
 
 }

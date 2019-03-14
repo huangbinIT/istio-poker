@@ -32,7 +32,7 @@ public class Poker implements Comparable<Object> {
         if (colorResult != 0) {
             return colorResult;
         } else {
-            return this.point.compare(point);
+            return this.point.compare(poker.point);
         }
     }
 
